@@ -1,15 +1,23 @@
-
 import networkx as nx
+import numpy as np
 import matplotlib.pyplot as plt
 import math
 import random
 import collections
 import seaborn as sns
+
+# number of nodes in random graph
 n = 30
+
+# number of nodes in complete graph
 k = 10
 
+# total number of nodes in combined graph
+N = n + k
+
+# probably of edge connection
 p = 0.1
-m=n+k
+
 G = nx.Graph()
 color_map = []
 
@@ -48,28 +56,36 @@ for i in range(k, k + n):
         if random.uniform(0, 1) < p:
             G.add_edge(i, j)
 
+# color the nodes
 for node in G:
     if node < k:
         color_map.append('red')
     else:
         color_map.append('blue')
 
-# to plot the degree distribution
+# plot the graph G
+plt.figure(1)
+pos = nx.get_node_attributes(G, 'pos')
+nx.draw(G, pos, node_color=color_map, edge_color="grey", width=0.25, with_labels=True)
 
-degree_sequence= sorted([d for m,d in G.degree()],reverse=True)
-print("degree is :" ,G.degree())
-degreeCount=collections.Counter(degree_sequence)
-deg,cnt=zip(*degreeCount.items())
-fig,ax=plt.subplots()
-plt.bar(deg,cnt,width=0.90,color="blue")
+# plot the degree distribution
+
+plt.figure(2)
+degree_sequence = list(G.degree())
+print("degree sequence :", degree_sequence)
+
+print(degree_sequence[0])
+
+# separate the coords into 2 arrays for plotting
+node, degree = zip(*degree_sequence)
+
+plt.bar(node, degree)
+plt.xticks(node)
+plt.yticks(degree)
+
 plt.title("Degree Distribution")
 plt.ylabel("degree")
 plt.xlabel("nodes")
+
 plt.show()
-pos = nx.get_node_attributes(G, 'pos')
-nx.draw(G, pos, node_color=color_map, edge_color="grey", width=0.25, with_labels=True)
-plt.show()
-
-
-
 
